@@ -1,0 +1,106 @@
+body{
+  background-color: #B9A394;
+}
+/* NAVBAR: ============================================================  ============================================================ ============================================================ ============================================================*/
+#navBarDiv{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 1rem 30% 1rem 30%;
+  /* border-bottom: 3px solid black; */
+  align-items: baseline;
+  padding: 0 0 0 0;
+}
+
+#NavBarHomeH3{
+  color: black;
+  line-height: 50%;
+}
+
+#NavBarCreateH3{
+  color: #000;
+  line-height: 50%;
+}
+
+#NavBarTitleH2{
+  color: black;
+  line-height: 50%;
+}
+
+/* TABLE: ======================================================================================================================== ============================================================ ============================================================*/
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+/* CREATE PAGE: ======================================================================================================================== ============================================================ ============================================================*/
+
+#createComponentContainer{
+  margin: 1rem 20% 4rem 15%;
+  padding-left: 5%;
+  border-left: .7rem solid black;
+}
+
+#createTitleDiv{
+  display: flex;
+  justify-content: center;
+  margin: 2rem;
+}
+
+#createSubTitleH2{
+text-decoration: underline solid black 5px;
+}
+
+#VINOutput{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 75%;
+  padding: .7rem;
+  border: .3rem solid black;
+}
+
+.VinOutputItem{
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0 .7rem 0 .7rem;
+ 
+}
+
+.spaceAboveAndBelow{
+  margin: 1rem 0 1rem 0;
+}
+
+.labelText{
+  font-size: 1.7rem;
+  margin: 0 .7rem 0 0;
+}
+
+.createPageInput{
+  border-radius: 30px;
+  padding: .5rem;
+}
+
+#submitButton{
+  height: 3rem;
+  width: 20rem;
+  border-radius: 30px;
+  font-size: 1.5rem;
+  margin: 1rem 0 1rem 0;
+}
+
+#tripCostLowerTitle{
+
+}
