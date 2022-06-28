@@ -13,17 +13,20 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('failed_jobs', function (Blueprint $table) {
+        Schema::create('trips', function (Blueprint $table) {
             $table->id();
-            $table->string('uuid')->unique();
-            $table->text('connection');
-            $table->text('queue');
-            $table->longText('payload');
-            $table->longText('exception');
-            $table->timestamp('failed_at')->useCurrent();
+            $table->string('trip_name')->unique();
+            $table->string('vin_number');
+            $table->integer('distance');
+            $table->integer('tolls');
+            $table->integer('foodBudget');
+            $table->integer('wearAndTear');
+            $table->integer('misc');
+            $table->string('startingPoint');
+            $table->string('endingPoint');
+            $table->timestamp('created_at')->useCurrent();
         });
     }
-
     /**
      * Reverse the migrations.
      *
@@ -31,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('failed_jobs');
+        Schema::dropIfExists('trips');
     }
 };

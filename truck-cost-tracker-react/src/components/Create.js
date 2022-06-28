@@ -1,11 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Route, Routes, Link } from 'react-router-dom';
 import { useState } from 'react';
 import axios from 'axios';
 
 const Create = () => {
-
-
 
   const [name, setName] = useState('')
   const [vin, setVin] = useState('')
@@ -18,18 +16,59 @@ const Create = () => {
   const [endingPoint, setEndingPoint] = useState('')
 
 
+  useEffect(()=> {
+    // make external api call in here. 
+    // set data
+    // make sure vin is valid
+
+
+  }, [vin])
+
+
   const handleSubmit = (evt) => {
     evt.preventDefault();
-    console.log(name);
-    console.log(vin);
-    console.log(distance);
-    console.log(tolls);
-    console.log(foodBudget);
-    console.log(wearAndTear);
-    console.log(misc);
-    console.log(startingPoint);
-    console.log(endingPoint);
+    // console.log(name);
+    // console.log(vin);
+    // console.log(distance);
+    // console.log(tolls);
+    // console.log(foodBudget);
+    // console.log(wearAndTear);
+    // console.log(misc);
+    // console.log(startingPoint);
+    // console.log(endingPoint);
+
+
+    // THIS IS HOW WE GET THE PETS
+// fetch ('http://127.0.0.1:8000/api/getPets')
+// .then(r => r.json()) 
+// .then(r => console.log(r))
+// .catch(err => console.log(err))
+
+  // THIS IS HOW WE POST THE PETS FROM THE FORM
+fetch ('http://127.0.0.1:8000/api/postPet', {
+  method: 'POST',
+  body: JSON.stringify({
+    name: vin,
+  }),
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+},
+
+})
+.then(r => r.json()) 
+.then(r => console.log(r))
+.catch(err => console.log(err))
+
+
+    // function calculateCost() {
+    //  let totalCost =  (distance / (MPG * GasPrice)) + tolls + foodBudget + wearAndTear + misc
+    // }
 }
+
+
+
+
 
 
 
@@ -51,11 +90,12 @@ const Create = () => {
           <label className="labelText" htmlFor="name">Enter the Trip Name</label>
           <input className='createPageInput' type="name"  onChange={e => setName(e.target.value)} value={name} id="name" name="name" />
           </div>
-          
+
         <div className='spaceAboveAndBelow'>
-          <label className="labelText" htmlFor="VIN">Enter the VIN#</label>
-          <input className='createPageInput' type="text"  onChange={e => setVin(e.target.value)} value={vin} id="VIN" name="VIN" />
+          <label className="labelText" htmlFor="vin">Enter the VIN#</label>
+          <input className='createPageInput' type="text"  onChange={e => setVin(e.target.value)} value={vin} id="vin" name="vin" />
         </div>
+
 
 
 
