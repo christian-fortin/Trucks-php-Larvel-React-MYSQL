@@ -24,7 +24,7 @@ return new class extends Migration
             $table->integer('misc');
             $table->string('startingPoint');
             $table->string('endingPoint');
-            $table->timestamp('created_at')->useCurrent();
+            $table->timestamps();
         });
     }
     /**
