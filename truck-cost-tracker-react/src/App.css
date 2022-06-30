@@ -35,15 +35,19 @@ table {
   border-collapse: collapse;
   width: 100%;
 }
+th{
+  background-color: #dddddd;
+}
 
 td, th {
-  border: 5px solid #dddddd;
+  border: 5px solid maroon;
   text-align: left;
   padding: 8px;
+
 }
 
 tr:nth-child(even) {
-  background-color: #dddddd;
+  background-color: white;
 }
 
 #tableDiv{
@@ -56,6 +60,9 @@ justify-content: center;
 margin: 2rem 0 2rem 0;
 }
 
+.datumSquare_table{
+text-align: center;
+}
 /* CREATE PAGE: ======================================================================================================================== ============================================================ ============================================================*/
 
 form{
