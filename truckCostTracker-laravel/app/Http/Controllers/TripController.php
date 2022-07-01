@@ -22,6 +22,7 @@ class TripController extends Controller
         $trips->misc=$req->input('misc');
         $trips->startingPoint=$req->input('startingPoint');
         $trips->endingPoint=$req->input('endingPoint');
+        $trips->cost=$req->input('cost');
         $trips->save();
         return $trips;
        }

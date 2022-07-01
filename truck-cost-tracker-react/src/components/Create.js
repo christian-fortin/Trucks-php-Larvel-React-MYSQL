@@ -6,6 +6,7 @@ import axios from 'axios';
 const Create = () => {
   /* DATA STATES
 =============== ========================= ========================= ========================= ========================= ====== =================== ========================= ===*/
+// These are the useState hooks. They basically send the data into another dimension when the page is reloading and "hook" it back into this dimension so that it stays the same.
   const [name, setName] = useState('');
   const [vin, setVin] = useState('');
   const [distance, setDistance] = useState('');
@@ -15,8 +16,11 @@ const Create = () => {
   const [misc, setMisc] = useState('');
   const [startingPoint, setStartingPoint] = useState('');
   const [endingPoint, setEndingPoint] = useState('');
+  const [gasPriceStart, setGasPriceStart] = useState('');
+  const [gasPriceEnd, setGasPriceEnd] = useState('');
+  
 
-  const [vinData, setVinData] = useState([]);
+  const [vinData, setVinData] = useState(null);
   const [data, setData] = useState([]);
   /* ============== ============= ============= ============= ==================== ===================== ===================== ===================== ===================== ===========*/
 
@@ -24,8 +28,16 @@ const Create = () => {
 
   /* THIS IS HOW WE POST THE TRIPS FROM THE FORM
 =============== ============== ============== ============== ============== ============== ============== ============== ============== ============== ============== =============*/
+
+
   const handleSubmit = (evt) => {
+    // HandleSubmit is to get the current value in an input and compares it to the schema and then hooks it back in. 
     evt.preventDefault();
+    // Stops the form from automatically submitting
+parseFloat(distance)
+
+    let cost = (parseFloat(distance) / (gasPriceStart * parseFloat((vinData.specification.highway_mileage.split(" ")[0])))) + parseFloat(tolls) + parseFloat(foodBudget) + parseFloat(wearAndTear) + parseFloat(misc) 
+    console.log('THIS IS THE COST',cost);
 
     fetch('http://127.0.0.1:8000/api/postTrips', {
       method: 'POST',
@@ -39,6 +51,7 @@ const Create = () => {
         misc: misc,
         startingPoint: startingPoint,
         endingPoint: endingPoint,
+        cost: cost,
       }),
       headers: {
         Accept: 'application/json',
@@ -46,8 +59,10 @@ const Create = () => {
       },
     })
       .then((r) => r.json())
+      // Converts the data to json
       // .then(r => console.log(r))
       .catch((err) => console.log(err));
+      // Catches an error 
   };
   /* ============ ============ ============ ============ ============ ============ ============ ============ ============ ============ ============ =========== =========== =============*/
 
@@ -65,6 +80,7 @@ const Create = () => {
     let json = await trips.json();
     if (json) {
       setData(json);
+      // Sets the data 
     } 
   };
 
@@ -73,15 +89,20 @@ const Create = () => {
   useEffect(() => {
     getData();
   }, []);
+  // Use effect basically makes it so an event only happens at a certain point, adding the empty array means it only happens once.
   /* ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ============ ============*/
 
 
 
 
+ /*THIS IS HOW WE GET THE GAS PRICES INFO
+  ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ============ ============*/
 
 
 
-  // fetch("https://api.collectapi.com/gasPrice/stateUsaPrice?state=WA", {
+  //   useEffect(() => {
+    
+  // fetch("https://api.collectapi.com/gasPrice/stateUsaPrice?state=${startingPoint}", {
   //     headers: {
   //       "Content-Type": "application/json",
   //       "authorization": "apikey 3EBIl9TDIFTrlEbpwf1UaT:6KVB1rY4cbTb6o65wO2Nzy",
@@ -91,6 +112,10 @@ const Create = () => {
   //     .then((resp) => {
   //       console.log(resp);
   //     });
+  //   }, []);
+  /* ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ============ ============*/
+
+
 
 
 
@@ -98,21 +123,45 @@ const Create = () => {
 
   /*THIS IS HOW WE GET THE VIN INFO
   ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ============ ============*/
+
   useEffect(()=> {
     // THIS IS HOW WE GET THE VIN INFO
     if (vin.length === 17) {
-      fetch (`https://vpic.nhtsa.dot.gov/api/vehicles/decodevin/${vin}?format=json`)
+       
+      fetch (`https://vindecoder.p.rapidapi.com/decode_vin?vin=${vin}`, {
+    headers: {
+      'X-RapidAPI-Key': '27fc2cee76msh8b9ca61a92bf8c1p122348jsn030ad32a4b7e',
+      'X-RapidAPI-Host': 'vindecoder.p.rapidapi.com'
+    }
+  })
       .then(r => r.json())
-      .then(json => setVinData(json))
+      .then(json => {setVinData(json); console.log(json)} )
       .catch(err => console.log(err))
     }
 
   }, [vin])
 
 
+console.log('THIS IS THE VIN DATA', vinData);
+if (vinData) {
+  // of the array is 0, then set it to null so there is no error 
+  console.log('THIS IS THE VIN MAKE', vinData.specification.make);
+  console.log('THIS IS THE VIN MODEL', vinData.specification.model);
+  console.log('THIS IS THE VIN TANK SIZE', vinData.specification.tank_size);
+  if (vinData.specification.highway_mileage) {
+     console.log('THIS IS THE VIN MPG', parseFloat((vinData.specification.highway_mileage.split(" ")[0])));
+
+  } else {
+   console.log('Unavliable'); 
+  }
+
+}
+
+
+
 
 // HOW TO CATCH THE DATA I NEED:
-// MAKE:
+// MAKE: 
 // MODEL:
 // TANK SIZE:
 // MPG:
@@ -123,19 +172,26 @@ const Create = () => {
 
   /* THIS IS THE CALCULATION FOR THE TOTAL
   ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ============ ============*/
-  const lastData = data[data.length-1]
-  console.log('LAST DATA', lastData);
+  // const lastData = data[data.length-1]
+  // // So that I can get the last item in the array of objects
+  // console.log('LAST DATA', lastData);
 
-  if (data.length === 0) {
-    return null
-  }
-  let total = (lastData.distance / (1 * 1)) + lastData.tolls + lastData.foodBudget + lastData.wearAndTear + lastData.misc
-  console.log(total);
+  // if (data.length === 0) {
+  //   // of the array is 0, then set it to null so there is no error 
+  //   return null
+  // }
+  // let total = (lastData.distance / (1 * 1)) + lastData.tolls + lastData.foodBudget + lastData.wearAndTear + lastData.misc
+  // // This is the formula for the total cost
+  // console.log(total);
 
+
+
+  // console.log(startingPoint);
+  // console.log(endingPoint);
  
+
+
   /* ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ============ ============*/
-
-
 
   return (
     <div id="createComponentContainer">
@@ -177,11 +233,18 @@ const Create = () => {
 
           {/* MAKE MODEL TANK MPG */}
           <div className="spaceAboveAndBelow" id="VINOutput">
-            <div className="VinOutputItem">MAKE: XXX</div>
-            <div className="VinOutputItem">MODEL: YYY</div>
-            <div className="VinOutputItem">TANK SIZE: ZZZ</div>
-            <div className="VinOutputItem">MPG: AAA</div>
+            <div className="VinOutputItem">MAKE: xxx</div>
+            <div className="VinOutputItem">MODEL: yyy</div>
+            <div className="VinOutputItem">TANK SIZE: zzz</div>
+            <div className="VinOutputItem">MPG: aaa</div>
           </div>
+
+          {/* <div className="spaceAboveAndBelow" id="VINOutput">
+            <div className="VinOutputItem">MAKE: {vinData.specification.make}</div>
+            <div className="VinOutputItem">MODEL: {vinData.specification.model}</div>
+            <div className="VinOutputItem">TANK SIZE: {vinData.specification.tank_size}</div>
+            <div className="VinOutputItem">MPG: {parseFloat((vinData.specification.highway_mileage.split(" ")[0]))}</div>
+          </div> */}
 
           <div id="createSubTitleDiv">
             <h2 id="createSubTitleH2">Cost Calculator:</h2>
@@ -259,9 +322,11 @@ const Create = () => {
             />
           </div>
 
+       
+
           <div className="spaceAboveAndBelow">
             <label className="labelText" htmlFor="startingPoint">
-              Starting Point:{' '}
+              Starting Point:
             </label>
             <input
               className="createPageInput startEndPointInputs"
@@ -275,7 +340,7 @@ const Create = () => {
 
           <div className="spaceAboveAndBelow">
             <label className="labelText" htmlFor="endingPoint">
-              End Point:{' '}
+              End Point:
             </label>
             <input
               className="createPageInput startEndPointInputs"
@@ -287,6 +352,36 @@ const Create = () => {
             />
           </div>
 
+          <button onClick={(e) => {
+            e.preventDefault()
+            fetch(`https://api.collectapi.com/gasPrice/stateUsaPrice?state=${startingPoint}`, {
+      headers: {
+        "Content-Type": "application/json",
+        "authorization": "apikey 3EBIl9TDIFTrlEbpwf1UaT:6KVB1rY4cbTb6o65wO2Nzy",
+      },
+    })
+      .then((r) => r.json())
+      .then((resp) => {
+      setGasPriceStart(resp.result.state.gasoline);
+      });
+          }}>Get Gas Prices Start</button>
+
+{/* <button onClick={(e) => {
+            e.preventDefault()
+            fetch(`https://api.collectapi.com/gasPrice/stateUsaPrice?state=${endingPoint}`, {
+      headers: {
+        "Content-Type": "application/json",
+        "authorization": "apikey 3EBIl9TDIFTrlEbpwf1UaT:6KVB1rY4cbTb6o65wO2Nzy",
+      },
+    })
+      .then((r) => r.json())
+      .then((resp) => {
+      setGasPriceEnd(resp.result.state.gasoline);
+      });
+          }}>Get Gas Prices End</button> */}
+{/* 
+const [gasPrice, setGasPrice] = useState(''); */}
+
           <input
             type="submit"
             value="Submit For Calculations"
@@ -297,17 +392,17 @@ const Create = () => {
 
       <h3 id="tripCostLowerTitle">Trip Calculation:</h3>
       <p>
-        {' '}
+        
         (Distance / (MPG * Gas Price)) + Tolls + Food + Wear and Tear + Miscellaneous
       </p>
 
-       <p>
-        {' '}
-        ({data[data.length - 1].distance} / (MPG * Gas Price)) +{' '}
-        {data[data.length - 1].tolls} + {data[data.length - 1].foodBudget} +{' '}
-        {data[data.length - 1].wearAndTear} + {data[data.length - 1].misc}
+       {/* <p>
+        
+        ({lastData.distance} / (MPG * Gas Price)) +
+        {lastData.tolls} + {lastData.foodBudget} +
+        {lastData.wearAndTear} + {lastData.misc}
       </p> 
-      <h1>TOTAL: ${total}</h1>
+      <h1>TOTAL: ${total}</h1> */}
     </div>
   );
 };

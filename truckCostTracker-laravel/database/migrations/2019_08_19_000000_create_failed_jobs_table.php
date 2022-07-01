@@ -25,6 +25,7 @@ return new class extends Migration
             $table->integer('misc');
             $table->string('startingPoint');
             $table->string('endingPoint');
+            $table->float('cost');
             $table->timestamps();
         });
     }
