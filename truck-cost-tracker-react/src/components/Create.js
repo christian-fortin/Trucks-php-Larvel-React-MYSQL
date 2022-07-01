@@ -15,9 +15,10 @@ const Create = () => {
   const [misc, setMisc] = useState('');
   const [startingPoint, setStartingPoint] = useState('');
   const [endingPoint, setEndingPoint] = useState('');
+
+  const [vinData, setVinData] = useState([]);
+  const [data, setData] = useState([]);
   /* ============== ============= ============= ============= ==================== ===================== ===================== ===================== ===================== ===========*/
-
-
 
 
 
@@ -58,14 +59,16 @@ const Create = () => {
 
   /* THIS IS TO GET ALL THE DATA FOR THE TRIPS -- USED FOR THE CALCULATIONS AT THE BOTTOM
 ================= ================ ================ ================ ================ ================ ================ ================ ================ ================ =======*/
-  const [data, setData] = useState([]);
+
   let getData = async () => {
     let trips = await fetch('http://127.0.0.1:8000/api/getTrips');
     let json = await trips.json();
     if (json) {
       setData(json);
-    }
+    } 
   };
+
+  console.log('DATA:', data);
 
   useEffect(() => {
     getData();
@@ -77,12 +80,17 @@ const Create = () => {
 
 
 
-  /* THIS IS THE CALCULATION FOR THE TOTAL
-  ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ============ ============*/
-  // let total = ((data[data.length-1].distance / (1 * 1)) + data[data.length-1].tolls + data[data.length-1].foodBudget + data[data.length-1].wearAndTear + data[data.length-1].misc)
-  // console.log(total);
-  /* ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ============ ============*/
 
+  // fetch("https://api.collectapi.com/gasPrice/stateUsaPrice?state=WA", {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       "authorization": "apikey 3EBIl9TDIFTrlEbpwf1UaT:6KVB1rY4cbTb6o65wO2Nzy",
+  //     },
+  //   })
+  //     .then((r) => r.json())
+  //     .then((resp) => {
+  //       console.log(resp);
+  //     });
 
 
 
@@ -90,28 +98,17 @@ const Create = () => {
 
   /*THIS IS HOW WE GET THE VIN INFO
   ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ============ ============*/
-  // useEffect(()=> {
-  //   // THIS IS HOW WE GET THE VIN INFO
-  //   fetch (`https://vpic.nhtsa.dot.gov/api/vehicles/decodevin/${vin}?format=json`)
-  //   .then(r => r.json())
-  //   .then(r => console.log(r))
-  //   .catch(err => console.log(err))
-  // }, [])
-
-  const [vinData, setVinData] = useState([]);
-  let getVinData = async () => {
-    let vinNumber = await fetch (`https://vpic.nhtsa.dot.gov/api/vehicles/decodevin/WVGBV75N19W507096?format=json`)
-    let json = await vinNumber.json();
-    if (json) {
-      setData(json);
+  useEffect(()=> {
+    // THIS IS HOW WE GET THE VIN INFO
+    if (vin.length === 17) {
+      fetch (`https://vpic.nhtsa.dot.gov/api/vehicles/decodevin/${vin}?format=json`)
+      .then(r => r.json())
+      .then(json => setVinData(json))
+      .catch(err => console.log(err))
     }
-  };
 
-  useEffect(() => {
-    getVinData();
-  }, []);
+  }, [vin])
 
-  console.log(vinData);
 
 
 // HOW TO CATCH THE DATA I NEED:
@@ -124,7 +121,19 @@ const Create = () => {
 
 
 
+  /* THIS IS THE CALCULATION FOR THE TOTAL
+  ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ============ ============*/
+  const lastData = data[data.length-1]
+  console.log('LAST DATA', lastData);
 
+  if (data.length === 0) {
+    return null
+  }
+  let total = (lastData.distance / (1 * 1)) + lastData.tolls + lastData.foodBudget + lastData.wearAndTear + lastData.misc
+  console.log(total);
+
+ 
+  /* ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ============ ============*/
 
 
 
@@ -289,35 +298,18 @@ const Create = () => {
       <h3 id="tripCostLowerTitle">Trip Calculation:</h3>
       <p>
         {' '}
-        (Distance / (MPG * Gas Price)) + Tolls + Food + Wear and Tear + Other
+        (Distance / (MPG * Gas Price)) + Tolls + Food + Wear and Tear + Miscellaneous
       </p>
 
-      {/* <p>
+       <p>
         {' '}
         ({data[data.length - 1].distance} / (MPG * Gas Price)) +{' '}
         {data[data.length - 1].tolls} + {data[data.length - 1].foodBudget} +{' '}
         {data[data.length - 1].wearAndTear} + {data[data.length - 1].misc}
-      </p> */}
-      {/* <h1>TOTAL: ${total}</h1> */}
-      <h1>TOTAL: $</h1>
+      </p> 
+      <h1>TOTAL: ${total}</h1>
     </div>
   );
 };
 
 export default Create;
-
-{
-  /* 
-      <?php
-         echo Form::open(array('url' => 'foo/bar'));
-            echo Form::text('username','Username');
-            echo '<br/>';
-            
-            echo Form::text('email', 'example@gmail.com');
-            echo '<br/>';
-            
-
-            echo Form::submit('Click Me!');
-         echo Form::close();
-      ?> */
-}

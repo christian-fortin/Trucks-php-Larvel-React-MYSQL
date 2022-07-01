@@ -35,14 +35,14 @@ const Home = () => {
               <th>Trip Name</th>
               <th>Cost</th>
               <th>Date</th>
-              <th>vin</th>
-              <th>distance</th>
-              <th>tolls</th>
-              <th>foodBudget</th>
-              <th>wearAndTear</th>
-              <th>misc</th>
-              <th>startingPoint</th>
-              <th>endingPoint</th>
+              <th>Vin#</th>
+              <th>Distance</th>
+              <th>Tolls</th>
+              <th>Food Budget</th>
+              <th>Wear & Tear</th>
+              <th>Misc.</th>
+              <th>Starting Point</th>
+              <th>Ending Point</th>
             </tr>
           </thead>
           <tbody>

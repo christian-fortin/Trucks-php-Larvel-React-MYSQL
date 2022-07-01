@@ -1,31 +1,31 @@
 body{
-  background-color: #B9A394;
+  background-color: #99D5C9;
 }
 /* NAVBAR: ============================================================  ============================================================ ============================================================ ============================================================*/
 #navBarDiv{
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  margin: 1rem 30% 1rem 30%;
-  /* border-bottom: 3px solid black; */
+  justify-content: center;
+  margin: 2.5rem 30% 1rem 30%;
   align-items: baseline;
   padding: 0 0 0 0;
 }
 
 #NavBarHomeH3{
   color: black;
-  line-height: 50%;
 }
 
 #NavBarCreateH3{
   color: #000;
-  line-height: 50%;
 }
 
 #NavBarTitleH2{
+  display: flex;
+  justify-content: center;
   color: black;
-  line-height: 50%;
   font-size: 3rem;
+  margin: 0 2rem 0 2rem;
+  text-align: center;
 }
 
 /* TABLE: ======================================================================================================================== ============================================================ ============================================================*/
@@ -72,6 +72,15 @@ form{
   align-items: center;
 }
 
+@media only screen and (max-width: 1000px) {
+  form{
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
 #createComponentContainer{
   margin: 1rem 20% 4rem 15%;
   padding-left: 5%;
@@ -97,6 +106,18 @@ text-decoration: underline solid black 5px;
   border: .3rem solid black;
 }
 
+
+@media only screen and (max-width: 1000px) {
+  #VINOutput{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 75%;
+    padding: .7rem;
+    border: none;
+  }
+}
+
 .VinOutputItem{
   font-size: 1.5rem;
   font-weight: bold;
@@ -106,6 +127,21 @@ text-decoration: underline solid black 5px;
 
 .spaceAboveAndBelow{
   margin: 1rem 0 1rem 0;
+}
+
+.spaceAboveAndBelowShow{
+  margin: 2rem 0 2rem 0rem;
+  text-decoration: underline solid .2rem black;
+}
+
+#showCardSubDiv{  
+  text-decoration: underline solid .2rem black;
+}
+
+#showCardDiv{
+  margin: 1rem 20% 4rem 15%;
+  padding-left: 5%;
+  border-left: .7rem solid black;
 }
 
 .labelText{
@@ -120,8 +156,15 @@ text-decoration: underline solid black 5px;
 }
 
 .startEndPointInputs{
-  width: 25rem;
+  width: 40rem;
   text-align: center;
+}
+
+@media only screen and (max-width: 1000px) {
+  .startEndPointInputs{
+    width: 25rem;
+    text-align: center;
+  }
 }
 
 #submitButton{

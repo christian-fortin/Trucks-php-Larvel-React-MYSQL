@@ -13,11 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
+        // This is basically where I defined the schema and the requirements for the model. Its the Blue Print!
         Schema::create('trips', function (Blueprint $table) {
             $table->id();
             $table->string('trip_name')->unique();
             $table->string('vin_number');
-            $table->integer('distance');
+            $table->float('distance');
             $table->integer('tolls');
             $table->integer('foodBudget');
             $table->integer('wearAndTear');

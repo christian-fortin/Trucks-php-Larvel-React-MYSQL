@@ -15,13 +15,12 @@ use App\Http\Controllers\TripController;
 |
 */
 
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// THIS IS WHERE I DEFINED THE ROUTES
 Route::get('getTrips', [TripController::class, 'getTrips']);
 Route::post('postTrips', [TripController::class, 'postTrips']);
 
-
-// Route::get('getPets', [TripController::class, 'getPets']);
-// Route::post('postPet', [TripController::class, 'postPet']);
