@@ -47,12 +47,18 @@ const Home = () => {
           </thead>
           <tbody>
             {data.map((datum) => {
+
+              const date = new Date (datum.created_at)
+              const dateString = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`
+
+
+
               return (
                 <tr key={datum.id}>
                   <td className='datumSquare_table'>{datum.id}</td>
                   <td className='datumSquare_table'>{datum.trip_name}</td>
                   <td className='datumSquare_table'>${datum.cost}</td>
-                  <td className='datumSquare_table'>MM/DD/YYYY HH:MM:SS</td>
+                  <td className='datumSquare_table'>{dateString}</td>
                   <td className='datumSquare_table'>{datum.vin_number}</td>
                   <td className='datumSquare_table'>{datum.distance}(mi)</td>
                   <td className='datumSquare_table'>${datum.tolls}</td>
@@ -61,10 +67,9 @@ const Home = () => {
                   <td className='datumSquare_table'>${datum.misc}</td>
                   <td className='datumSquare_table'>{datum.startingPoint}</td>
                   <td className='datumSquare_table'>{datum.endingPoint}</td>
-         
                 </tr>
               );
-            })}
+            }).sort()}
           </tbody>
           <tfoot></tfoot>
         </table>

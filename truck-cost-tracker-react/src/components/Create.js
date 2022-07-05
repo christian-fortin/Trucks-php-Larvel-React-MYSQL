@@ -3,6 +3,9 @@ import { Route, Routes, Link } from 'react-router-dom';
 import { useState } from 'react';
 import axios from 'axios';
 
+
+// JH4DB1550MS003978
+
 const Create = () => {
   /* DATA STATES
 =============== ========================= ========================= ========================= ========================= ====== =================== ========================= ===*/
@@ -18,6 +21,7 @@ const Create = () => {
   const [endingPoint, setEndingPoint] = useState('');
   const [gasPriceStart, setGasPriceStart] = useState('');
   const [gasPriceEnd, setGasPriceEnd] = useState('');
+  const [timeStamp, setTimeStamp] = useState('');
   
 
   const [vinData, setVinData] = useState(null);
@@ -28,16 +32,69 @@ const Create = () => {
 
   /* THIS IS HOW WE POST THE TRIPS FROM THE FORM
 =============== ============== ============== ============== ============== ============== ============== ============== ============== ============== ============== =============*/
-
-
   const handleSubmit = (evt) => {
     // HandleSubmit is to get the current value in an input and compares it to the schema and then hooks it back in. 
     evt.preventDefault();
     // Stops the form from automatically submitting
-parseFloat(distance)
+    
+ 
 
     let cost = (parseFloat(distance) / (gasPriceStart * parseFloat((vinData.specification.highway_mileage.split(" ")[0])))) + parseFloat(tolls) + parseFloat(foodBudget) + parseFloat(wearAndTear) + parseFloat(misc) 
     console.log('THIS IS THE COST',cost);
+
+    if (!(cost)) {
+      alert('Please Enter The Missing Information')
+      return 
+    }
+
+// CHECKS FOR INPUTS
+    if (!(name) && (typeof name !== "string")) {
+      alert('Please Enter The Trip Name')
+      return 
+    }
+    if (!(vin) && (typeof vin !== "string")) {
+      alert('Please Enter The VIN Number, Check that it is 17 Characters Long')
+      return 
+    }
+    if (!(distance) && (typeof distance !== "string")) {
+      alert('Please Enter The Trip Distance')
+      return 
+    }
+    if (!(tolls) && (typeof tolls !== "number")) {
+      alert('Please Enter Cost of Tolls')
+      return 
+    }
+    if (!(foodBudget) && (typeof foodBudget !== "number")) {
+      alert('Please Enter Cost of the Food Budget')
+      return 
+    }
+    if (!(foodBudget) && (typeof foodBudget !== "number")) {
+      alert('Please Enter Cost of the Food Budget')
+      return 
+    }
+    if (!(wearAndTear) && (typeof wearAndTear !== "number")) {
+      alert('Please Enter Cost of the Wear and Tear Budget')
+      return 
+    }
+    if (!(wearAndTear) && (typeof wearAndTear !== "number")) {
+      alert('Please Enter Cost of the Wear and Tear Budget')
+      return 
+    }
+    
+    if (!(misc) && (typeof misc !== "number")) {
+      alert('Please Enter the Cost of other Miscellaneous Expenses, if None, Enter 0')
+      return 
+    }
+
+    if (!(startingPoint) && (typeof startingPoint !== "string")) {
+      alert('Please Enter the Starting Point Expenses')
+      return 
+    }
+
+    if (!(endingPoint) && (typeof endingPoint !== "string")) {
+      alert('Please Enter the Ending Point Expenses')
+      return 
+    }
 
     fetch('http://127.0.0.1:8000/api/postTrips', {
       method: 'POST',
@@ -130,7 +187,7 @@ parseFloat(distance)
        
       fetch (`https://vindecoder.p.rapidapi.com/decode_vin?vin=${vin}`, {
     headers: {
-      'X-RapidAPI-Key': '27fc2cee76msh8b9ca61a92bf8c1p122348jsn030ad32a4b7e',
+      'X-RapidAPI-Key': '50617aeee6msh8e0927e93cd95ddp11993ajsn99bf1768dc7f',
       'X-RapidAPI-Host': 'vindecoder.p.rapidapi.com'
     }
   })
@@ -150,9 +207,8 @@ if (vinData) {
   console.log('THIS IS THE VIN TANK SIZE', vinData.specification.tank_size);
   if (vinData.specification.highway_mileage) {
      console.log('THIS IS THE VIN MPG', parseFloat((vinData.specification.highway_mileage.split(" ")[0])));
-
   } else {
-   console.log('Unavliable'); 
+   console.log('Unavailable'); 
   }
 
 }
@@ -232,19 +288,16 @@ if (vinData) {
           </div>
 
           {/* MAKE MODEL TANK MPG */}
+     {/* This is optional chaining and nullish coalescing  */}
+     {/* PUT IT IN A P TAG FOR STYLING */}
           <div className="spaceAboveAndBelow" id="VINOutput">
-            <div className="VinOutputItem">MAKE: xxx</div>
-            <div className="VinOutputItem">MODEL: yyy</div>
-            <div className="VinOutputItem">TANK SIZE: zzz</div>
-            <div className="VinOutputItem">MPG: aaa</div>
+            <div className="VinOutputItem">MAKE: <p className='vinDataOutputPTag'>{vinData?.specification.make ?? 'Not Found'}</p> </div>
+            <div className="VinOutputItem">MODEL: <p className='vinDataOutputPTag'>{vinData?.specification.model ?? 'Not Found' }</p></div>
+            <div className="VinOutputItem">TANK SIZE: <p className='vinDataOutputPTag'>{vinData?.specification.tank_size ?? 'Not Found'}</p></div>
+            <div className="VinOutputItem">MPG: <p className='vinDataOutputPTag'>{parseFloat((vinData?.specification.highway_mileage.split(" ")[0])) ?? 'Not Found'}</p></div>
           </div>
+          {/* LOOK INTO CONDITIONAL RENDERING -- the && to check if I have the vin data */}
 
-          {/* <div className="spaceAboveAndBelow" id="VINOutput">
-            <div className="VinOutputItem">MAKE: {vinData.specification.make}</div>
-            <div className="VinOutputItem">MODEL: {vinData.specification.model}</div>
-            <div className="VinOutputItem">TANK SIZE: {vinData.specification.tank_size}</div>
-            <div className="VinOutputItem">MPG: {parseFloat((vinData.specification.highway_mileage.split(" ")[0]))}</div>
-          </div> */}
 
           <div id="createSubTitleDiv">
             <h2 id="createSubTitleH2">Cost Calculator:</h2>
@@ -273,6 +326,7 @@ if (vinData) {
             <input
               className="createPageInput"
               type="text"
+              // input types for number 
               onChange={(e) => setTolls(e.target.value)}
               value={tolls}
               id="tolls"
@@ -352,12 +406,14 @@ if (vinData) {
             />
           </div>
 
+          {/* --410 MAKE thIS ONE BUTTON */}
+
           <button onClick={(e) => {
             e.preventDefault()
             fetch(`https://api.collectapi.com/gasPrice/stateUsaPrice?state=${startingPoint}`, {
       headers: {
         "Content-Type": "application/json",
-        "authorization": "apikey 3EBIl9TDIFTrlEbpwf1UaT:6KVB1rY4cbTb6o65wO2Nzy",
+        "authorization": "apikey 6zYi7g4jsP9iKrZLMKmtTx:1DmTAygjJ0gZgHZ7ArTSbX",
       },
     })
       .then((r) => r.json())

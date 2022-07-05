@@ -8,10 +8,12 @@ use App\Models\Trip;
 class TripController extends Controller
 {
     // This function is how I can access all of the trips.
-    function getTrips() {
+    function getTrips() 
+    {
         return Trip::all();
-       }
-       function postTrips(Request $req) {
+    }
+    function postTrips(Request $req) 
+    {
         $trips = new Trip;
         $trips->trip_name=$req->input('trip_name');
         $trips->vin_number=$req->input('vin_number');
@@ -25,5 +27,5 @@ class TripController extends Controller
         $trips->cost=$req->input('cost');
         $trips->save();
         return $trips;
-       }
+    }
 }
