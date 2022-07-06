@@ -1,15 +1,14 @@
 import React, { useEffect } from 'react';
-import { Route, Routes, Link } from 'react-router-dom';
+// import { Route, Routes, Link } from 'react-router-dom';
 import { useState } from 'react';
-import axios from 'axios';
-
+// import axios from 'axios';
 
 // JH4DB1550MS003978
 
 const Create = () => {
   /* DATA STATES
 =============== ========================= ========================= ========================= ========================= ====== =================== ========================= ===*/
-// These are the useState hooks. They basically send the data into another dimension when the page is reloading and "hook" it back into this dimension so that it stays the same.
+  // These are the useState hooks. They basically send the data into another dimension when the page is reloading and "hook" it back into this dimension so that it stays the same.
   const [name, setName] = useState('');
   const [vin, setVin] = useState('');
   const [distance, setDistance] = useState('');
@@ -19,115 +18,125 @@ const Create = () => {
   const [misc, setMisc] = useState('');
   const [startingPoint, setStartingPoint] = useState('');
   const [endingPoint, setEndingPoint] = useState('');
-  const [gasPriceStart, setGasPriceStart] = useState('');
-  const [gasPriceEnd, setGasPriceEnd] = useState('');
-  const [timeStamp, setTimeStamp] = useState('');
-  
+  // const [gasPriceStart, setGasPriceStart] = useState('');
+  // const [gasPriceEnd, setGasPriceEnd] = useState('');
+  // const [timeStamp, setTimeStamp] = useState('');
 
   const [vinData, setVinData] = useState(null);
   const [data, setData] = useState([]);
   /* ============== ============= ============= ============= ==================== ===================== ===================== ===================== ===================== ===========*/
 
-
-
   /* THIS IS HOW WE POST THE TRIPS FROM THE FORM
 =============== ============== ============== ============== ============== ============== ============== ============== ============== ============== ============== =============*/
   const handleSubmit = (evt) => {
-    // HandleSubmit is to get the current value in an input and compares it to the schema and then hooks it back in. 
+    // HandleSubmit is to get the current value in an input and compares it to the schema and then hooks it back in.
     evt.preventDefault();
     // Stops the form from automatically submitting
-    
- 
 
-    let cost = (parseFloat(distance) / (gasPriceStart * parseFloat((vinData.specification.highway_mileage.split(" ")[0])))) + parseFloat(tolls) + parseFloat(foodBudget) + parseFloat(wearAndTear) + parseFloat(misc) 
-    console.log('THIS IS THE COST',cost);
-
-    if (!(cost)) {
-      alert('Please Enter The Missing Information')
-      return 
+    // CHECKS FOR INPUTS
+    if (!name && typeof name !== 'string') {
+      alert('Please Enter The Trip Name');
+      return;
     }
-
-// CHECKS FOR INPUTS
-    if (!(name) && (typeof name !== "string")) {
-      alert('Please Enter The Trip Name')
-      return 
+    if (!vin && typeof vin !== 'string') {
+      alert('Please Enter The VIN Number, Check that it is 17 Characters Long');
+      return;
     }
-    if (!(vin) && (typeof vin !== "string")) {
-      alert('Please Enter The VIN Number, Check that it is 17 Characters Long')
-      return 
+    if (!distance && typeof distance !== 'string') {
+      alert('Please Enter The Trip Distance');
+      return;
     }
-    if (!(distance) && (typeof distance !== "string")) {
-      alert('Please Enter The Trip Distance')
-      return 
+    if (!tolls && typeof tolls !== 'number') {
+      alert('Please Enter Cost of Tolls');
+      return;
     }
-    if (!(tolls) && (typeof tolls !== "number")) {
-      alert('Please Enter Cost of Tolls')
-      return 
-    }
-    if (!(foodBudget) && (typeof foodBudget !== "number")) {
-      alert('Please Enter Cost of the Food Budget')
-      return 
-    }
-    if (!(foodBudget) && (typeof foodBudget !== "number")) {
-      alert('Please Enter Cost of the Food Budget')
-      return 
-    }
-    if (!(wearAndTear) && (typeof wearAndTear !== "number")) {
-      alert('Please Enter Cost of the Wear and Tear Budget')
-      return 
-    }
-    if (!(wearAndTear) && (typeof wearAndTear !== "number")) {
-      alert('Please Enter Cost of the Wear and Tear Budget')
-      return 
-    }
-    
-    if (!(misc) && (typeof misc !== "number")) {
-      alert('Please Enter the Cost of other Miscellaneous Expenses, if None, Enter 0')
-      return 
+    if (!foodBudget && typeof foodBudget !== 'number') {
+      alert('Please Enter Cost of the Food Budget');
+      return;
     }
 
-    if (!(startingPoint) && (typeof startingPoint !== "string")) {
-      alert('Please Enter the Starting Point Expenses')
-      return 
+    if (!misc && typeof misc !== 'number') {
+      alert(
+        'Please Enter the Cost of other Miscellaneous Expenses, if None, Enter 0'
+      );
+      return;
+    }
+    if (!startingPoint && typeof startingPoint !== 'string') {
+      alert('Please Enter the Starting Point Expenses');
+      return;
+    }
+    if (!endingPoint && typeof endingPoint !== 'string') {
+      alert('Please Enter the Ending Point Expenses');
+      return;
     }
 
-    if (!(endingPoint) && (typeof endingPoint !== "string")) {
-      alert('Please Enter the Ending Point Expenses')
-      return 
-    }
 
-    fetch('http://127.0.0.1:8000/api/postTrips', {
-      method: 'POST',
-      body: JSON.stringify({
-        trip_name: name,
-        vin_number: vin,
-        distance: distance,
-        tolls: tolls,
-        foodBudget: foodBudget,
-        wearAndTear: wearAndTear,
-        misc: misc,
-        startingPoint: startingPoint,
-        endingPoint: endingPoint,
-        cost: cost,
-      }),
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    })
+
+    fetch(
+      `https://api.collectapi.com/gasPrice/stateUsaPrice?state=${startingPoint}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          authorization:
+            'apikey 6zYi7g4jsP9iKrZLMKmtTx:1DmTAygjJ0gZgHZ7ArTSbX',
+        },
+      }
+    )
       .then((r) => r.json())
+      .then((resp) => {
+        return resp.result.state.gasoline
+        // setGasPriceStart(resp.result.state.gasoline);
+      })
+      .then((gasolinePrice) => {
+        let cost =
+        parseFloat(distance) /
+          (gasolinePrice *
+            parseFloat(vinData.specification.highway_mileage.split(' ')[0])) +
+        parseFloat(tolls) +
+        parseFloat(foodBudget) +
+        parseFloat(wearAndTear) +
+        parseFloat(misc);
+      console.log('THIS IS THE COST', cost);
+
+        return fetch('http://127.0.0.1:8000/api/postTrips', {
+          method: 'POST',
+          body: JSON.stringify({
+            trip_name: name,
+            vin_number: vin,
+            distance: distance,
+            tolls: tolls,
+            foodBudget: foodBudget,
+            wearAndTear: wearAndTear,
+            misc: misc,
+            startingPoint: startingPoint,
+            endingPoint: endingPoint,
+            cost: cost,
+          }),
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        })
+      })
+      // .then((r) => r.json())
       // Converts the data to json
       // .then(r => console.log(r))
       .catch((err) => console.log(err));
-      // Catches an error 
+    // Catches an error
+
+  
+
+    // if (!cost) {
+    //   alert('Please Enter The Missing Information');
+    //   return;
+    // }
+
+
+  
+    
+
   };
   /* ============ ============ ============ ============ ============ ============ ============ ============ ============ ============ ============ =========== =========== =============*/
-
-
-
-
-
-
 
   /* THIS IS TO GET ALL THE DATA FOR THE TRIPS -- USED FOR THE CALCULATIONS AT THE BOTTOM
 ================= ================ ================ ================ ================ ================ ================ ================ ================ ================ =======*/
@@ -137,8 +146,8 @@ const Create = () => {
     let json = await trips.json();
     if (json) {
       setData(json);
-      // Sets the data 
-    } 
+      // Sets the data
+    }
   };
 
   console.log('DATA:', data);
@@ -149,16 +158,11 @@ const Create = () => {
   // Use effect basically makes it so an event only happens at a certain point, adding the empty array means it only happens once.
   /* ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ============ ============*/
 
-
-
-
- /*THIS IS HOW WE GET THE GAS PRICES INFO
+  /*THIS IS HOW WE GET THE GAS PRICES INFO
   ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ============ ============*/
 
-
-
   //   useEffect(() => {
-    
+
   // fetch("https://api.collectapi.com/gasPrice/stateUsaPrice?state=${startingPoint}", {
   //     headers: {
   //       "Content-Type": "application/json",
@@ -172,59 +176,50 @@ const Create = () => {
   //   }, []);
   /* ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ============ ============*/
 
-
-
-
-
-
-
   /*THIS IS HOW WE GET THE VIN INFO
   ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ============ ============*/
 
-  useEffect(()=> {
+  useEffect(() => {
     // THIS IS HOW WE GET THE VIN INFO
     if (vin.length === 17) {
-       
-      fetch (`https://vindecoder.p.rapidapi.com/decode_vin?vin=${vin}`, {
-    headers: {
-      'X-RapidAPI-Key': '50617aeee6msh8e0927e93cd95ddp11993ajsn99bf1768dc7f',
-      'X-RapidAPI-Host': 'vindecoder.p.rapidapi.com'
+      fetch(`https://vindecoder.p.rapidapi.com/decode_vin?vin=${vin}`, {
+        headers: {
+          'X-RapidAPI-Key':
+            '50617aeee6msh8e0927e93cd95ddp11993ajsn99bf1768dc7f',
+          'X-RapidAPI-Host': 'vindecoder.p.rapidapi.com',
+        },
+      })
+        .then((r) => r.json())
+        .then((json) => {
+          setVinData(json);
+          console.log(json);
+        })
+        .catch((err) => console.log(err));
     }
-  })
-      .then(r => r.json())
-      .then(json => {setVinData(json); console.log(json)} )
-      .catch(err => console.log(err))
+  }, [vin]);
+
+  console.log('THIS IS THE VIN DATA', vinData);
+  if (vinData) {
+    // of the array is 0, then set it to null so there is no error
+    console.log('THIS IS THE VIN MAKE', vinData.specification.make);
+    console.log('THIS IS THE VIN MODEL', vinData.specification.model);
+    console.log('THIS IS THE VIN TANK SIZE', vinData.specification.tank_size);
+    if (vinData.specification.highway_mileage) {
+      console.log(
+        'THIS IS THE VIN MPG',
+        parseFloat(vinData.specification.highway_mileage.split(' ')[0])
+      );
+    } else {
+      console.log('Unavailable');
     }
-
-  }, [vin])
-
-
-console.log('THIS IS THE VIN DATA', vinData);
-if (vinData) {
-  // of the array is 0, then set it to null so there is no error 
-  console.log('THIS IS THE VIN MAKE', vinData.specification.make);
-  console.log('THIS IS THE VIN MODEL', vinData.specification.model);
-  console.log('THIS IS THE VIN TANK SIZE', vinData.specification.tank_size);
-  if (vinData.specification.highway_mileage) {
-     console.log('THIS IS THE VIN MPG', parseFloat((vinData.specification.highway_mileage.split(" ")[0])));
-  } else {
-   console.log('Unavailable'); 
   }
 
-}
-
-
-
-
-// HOW TO CATCH THE DATA I NEED:
-// MAKE: 
-// MODEL:
-// TANK SIZE:
-// MPG:
+  // HOW TO CATCH THE DATA I NEED:
+  // MAKE:
+  // MODEL:
+  // TANK SIZE:
+  // MPG:
   /* ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ============ ============*/
-
-
-
 
   /* THIS IS THE CALCULATION FOR THE TOTAL
   ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ============ ============*/
@@ -233,22 +228,19 @@ if (vinData) {
   // console.log('LAST DATA', lastData);
 
   // if (data.length === 0) {
-  //   // of the array is 0, then set it to null so there is no error 
+  //   // of the array is 0, then set it to null so there is no error
   //   return null
   // }
   // let total = (lastData.distance / (1 * 1)) + lastData.tolls + lastData.foodBudget + lastData.wearAndTear + lastData.misc
   // // This is the formula for the total cost
   // console.log(total);
 
-
-
   // console.log(startingPoint);
   // console.log(endingPoint);
- 
-
 
   /* ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ============ ============*/
 
+  // console.log(data.cost);
   return (
     <div id="createComponentContainer">
       <div id="createTitleDiv">
@@ -272,7 +264,6 @@ if (vinData) {
               name="name"
             />
           </div>
-
           <div className="spaceAboveAndBelow">
             <label className="labelText" htmlFor="vin">
               Enter the VIN#
@@ -288,16 +279,37 @@ if (vinData) {
           </div>
 
           {/* MAKE MODEL TANK MPG */}
-     {/* This is optional chaining and nullish coalescing  */}
-     {/* PUT IT IN A P TAG FOR STYLING */}
+          {/* This is optional chaining and nullish coalescing  */}
+          {/* PUT IT IN A P TAG FOR STYLING */}
           <div className="spaceAboveAndBelow" id="VINOutput">
-            <div className="VinOutputItem">MAKE: <p className='vinDataOutputPTag'>{vinData?.specification.make ?? 'Not Found'}</p> </div>
-            <div className="VinOutputItem">MODEL: <p className='vinDataOutputPTag'>{vinData?.specification.model ?? 'Not Found' }</p></div>
-            <div className="VinOutputItem">TANK SIZE: <p className='vinDataOutputPTag'>{vinData?.specification.tank_size ?? 'Not Found'}</p></div>
-            <div className="VinOutputItem">MPG: <p className='vinDataOutputPTag'>{parseFloat((vinData?.specification.highway_mileage.split(" ")[0])) ?? 'Not Found'}</p></div>
+            <div className="VinOutputItem">
+              MAKE:{' '}
+              <p className="vinDataOutputPTag">
+                {vinData?.specification.make ?? 'Not Found'}
+              </p>{' '}
+            </div>
+            <div className="VinOutputItem">
+              MODEL:{' '}
+              <p className="vinDataOutputPTag">
+                {vinData?.specification.model ?? 'Not Found'}
+              </p>
+            </div>
+            <div className="VinOutputItem">
+              TANK SIZE:{' '}
+              <p className="vinDataOutputPTag">
+                {vinData?.specification.tank_size ?? 'Not Found'}
+              </p>
+            </div>
+            <div className="VinOutputItem">
+              MPG:{' '}
+              <p className="vinDataOutputPTag">
+                {vinData ? parseFloat(
+                vinData.specification.highway_mileage.split(' ')[0]
+                ) : 'Not Found'}
+              </p>
+            </div>
           </div>
           {/* LOOK INTO CONDITIONAL RENDERING -- the && to check if I have the vin data */}
-
 
           <div id="createSubTitleDiv">
             <h2 id="createSubTitleH2">Cost Calculator:</h2>
@@ -326,7 +338,7 @@ if (vinData) {
             <input
               className="createPageInput"
               type="text"
-              // input types for number 
+              // input types for number
               onChange={(e) => setTolls(e.target.value)}
               value={tolls}
               id="tolls"
@@ -376,8 +388,6 @@ if (vinData) {
             />
           </div>
 
-       
-
           <div className="spaceAboveAndBelow">
             <label className="labelText" htmlFor="startingPoint">
               Starting Point:
@@ -408,7 +418,7 @@ if (vinData) {
 
           {/* --410 MAKE thIS ONE BUTTON */}
 
-          <button onClick={(e) => {
+          {/* <button onClick={(e) => {
             e.preventDefault()
             fetch(`https://api.collectapi.com/gasPrice/stateUsaPrice?state=${startingPoint}`, {
       headers: {
@@ -420,9 +430,9 @@ if (vinData) {
       .then((resp) => {
       setGasPriceStart(resp.result.state.gasoline);
       });
-          }}>Get Gas Prices Start</button>
+          }}>Get Gas Prices Start</button> */}
 
-{/* <button onClick={(e) => {
+          {/* <button onClick={(e) => {
             e.preventDefault()
             fetch(`https://api.collectapi.com/gasPrice/stateUsaPrice?state=${endingPoint}`, {
       headers: {
@@ -435,24 +445,26 @@ if (vinData) {
       setGasPriceEnd(resp.result.state.gasoline);
       });
           }}>Get Gas Prices End</button> */}
-{/* 
+          {/* 
 const [gasPrice, setGasPrice] = useState(''); */}
 
-          <input
+          <button
             type="submit"
             value="Submit For Calculations"
             id="submitButton"
-          />
+          >Submit For Calculations</button>
         </form>
       </div>
 
       <h3 id="tripCostLowerTitle">Trip Calculation:</h3>
       <p>
-        
-        (Distance / (MPG * Gas Price)) + Tolls + Food + Wear and Tear + Miscellaneous
+        (Distance / (MPG * Gas Price)) + Tolls + Food + Wear and Tear +
+        Miscellaneous
       </p>
 
-       {/* <p>
+      <h2>{data.cost}</h2>
+
+      {/* <p>
         
         ({lastData.distance} / (MPG * Gas Price)) +
         {lastData.tolls} + {lastData.foodBudget} +
