@@ -18,6 +18,7 @@ const Create = () => {
   const [misc, setMisc] = useState('');
   const [startingPoint, setStartingPoint] = useState('');
   const [endingPoint, setEndingPoint] = useState('');
+  const [error, setError] = useState('');
   // const [gasPriceStart, setGasPriceStart] = useState('');
   // const [gasPriceEnd, setGasPriceEnd] = useState('');
   // const [timeStamp, setTimeStamp] = useState('');
@@ -34,69 +35,72 @@ const Create = () => {
     // Stops the form from automatically submitting
 
     // CHECKS FOR INPUTS
-    if (!name && typeof name !== 'string') {
+    if (!name) {
       alert('Please Enter The Trip Name');
       return;
     }
-    if (!vin && typeof vin !== 'string') {
+    //FUNKY STATEMENT - DE MORGANS LAW
+    if (!(vin?.length === 17)) {
       alert('Please Enter The VIN Number, Check that it is 17 Characters Long');
       return;
     }
-    if (!distance && typeof distance !== 'string') {
+    if (!distance) {
       alert('Please Enter The Trip Distance');
       return;
     }
-    if (!tolls && typeof tolls !== 'number') {
+    if (!tolls) {
       alert('Please Enter Cost of Tolls');
       return;
     }
-    if (!foodBudget && typeof foodBudget !== 'number') {
+    if (!foodBudget) {
       alert('Please Enter Cost of the Food Budget');
       return;
     }
 
-    if (!misc && typeof misc !== 'number') {
+    if (!misc) {
       alert(
         'Please Enter the Cost of other Miscellaneous Expenses, if None, Enter 0'
       );
       return;
     }
-    if (!startingPoint && typeof startingPoint !== 'string') {
-      alert('Please Enter the Starting Point Expenses');
+    if (!startingPoint) {
+      alert('Please Enter the Starting Point');
       return;
     }
-    if (!endingPoint && typeof endingPoint !== 'string') {
-      alert('Please Enter the Ending Point Expenses');
+
+    if (!endingPoint) {
+      alert('Please Enter the Ending Point');
       return;
     }
 
 
+    setData(null)
+    setError(null)
 
     fetch(
       `https://api.collectapi.com/gasPrice/stateUsaPrice?state=${startingPoint}`,
       {
         headers: {
           'Content-Type': 'application/json',
-          authorization:
-            'apikey 6zYi7g4jsP9iKrZLMKmtTx:1DmTAygjJ0gZgHZ7ArTSbX',
+          authorization: 'apikey 6zYi7g4jsP9iKrZLMKmtTx:1DmTAygjJ0gZgHZ7ArTSbX',
         },
       }
     )
       .then((r) => r.json())
       .then((resp) => {
-        return resp.result.state.gasoline
+        return resp.result.state.gasoline;
         // setGasPriceStart(resp.result.state.gasoline);
       })
       .then((gasolinePrice) => {
         let cost =
-        parseFloat(distance) /
-          (gasolinePrice *
-            parseFloat(vinData.specification.highway_mileage.split(' ')[0])) +
-        parseFloat(tolls) +
-        parseFloat(foodBudget) +
-        parseFloat(wearAndTear) +
-        parseFloat(misc);
-      console.log('THIS IS THE COST', cost);
+          parseFloat(distance) /
+            (gasolinePrice *
+              parseFloat(vinData.specification.highway_mileage.split(' ')[0])) +
+          parseFloat(tolls) +
+          parseFloat(foodBudget) +
+          parseFloat(wearAndTear) +
+          parseFloat(misc);
+        console.log('THIS IS THE COST', cost);
 
         return fetch('http://127.0.0.1:8000/api/postTrips', {
           method: 'POST',
@@ -116,64 +120,44 @@ const Create = () => {
             Accept: 'application/json',
             'Content-Type': 'application/json',
           },
-        })
+        });
       })
-      // .then((r) => r.json())
+      .then((r) => r.json())
       // Converts the data to json
-      // .then(r => console.log(r))
-      .catch((err) => console.log(err));
+      .then(r => {
+        console.log('a', r)
+        if(!r.message){
+          setData(r)
+        } else {
+          setError(r) 
+        }
+      })
+      .catch((err) => console.log('THIS IS THE DATA ERROR', err));
     // Catches an error
-
-  
 
     // if (!cost) {
     //   alert('Please Enter The Missing Information');
     //   return;
     // }
-
-
-  
-    
-
   };
   /* ============ ============ ============ ============ ============ ============ ============ ============ ============ ============ ============ =========== =========== =============*/
 
   /* THIS IS TO GET ALL THE DATA FOR THE TRIPS -- USED FOR THE CALCULATIONS AT THE BOTTOM
 ================= ================ ================ ================ ================ ================ ================ ================ ================ ================ =======*/
 
-  let getData = async () => {
-    let trips = await fetch('http://127.0.0.1:8000/api/getTrips');
-    let json = await trips.json();
-    if (json) {
-      setData(json);
-      // Sets the data
-    }
-  };
-
-  console.log('DATA:', data);
-
-  useEffect(() => {
-    getData();
-  }, []);
+  // let getData = async () => {
+  //   let trips = await fetch('http://127.0.0.1:8000/api/getTrips');
+  //   let json = await trips.json();
+  //   if (json) {
+  //     setData(json);
+  //     // Sets the data
+  //   }
+  // };
+  // console.log('DATA:', data);
+  // useEffect(() => {
+  //   getData();
+  // }, []);
   // Use effect basically makes it so an event only happens at a certain point, adding the empty array means it only happens once.
-  /* ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ============ ============*/
-
-  /*THIS IS HOW WE GET THE GAS PRICES INFO
-  ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ============ ============*/
-
-  //   useEffect(() => {
-
-  // fetch("https://api.collectapi.com/gasPrice/stateUsaPrice?state=${startingPoint}", {
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       "authorization": "apikey 3EBIl9TDIFTrlEbpwf1UaT:6KVB1rY4cbTb6o65wO2Nzy",
-  //     },
-  //   })
-  //     .then((r) => r.json())
-  //     .then((resp) => {
-  //       console.log(resp);
-  //     });
-  //   }, []);
   /* ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ============ ============*/
 
   /*THIS IS HOW WE GET THE VIN INFO
@@ -213,30 +197,6 @@ const Create = () => {
       console.log('Unavailable');
     }
   }
-
-  // HOW TO CATCH THE DATA I NEED:
-  // MAKE:
-  // MODEL:
-  // TANK SIZE:
-  // MPG:
-  /* ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ============ ============*/
-
-  /* THIS IS THE CALCULATION FOR THE TOTAL
-  ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ============ ============*/
-  // const lastData = data[data.length-1]
-  // // So that I can get the last item in the array of objects
-  // console.log('LAST DATA', lastData);
-
-  // if (data.length === 0) {
-  //   // of the array is 0, then set it to null so there is no error
-  //   return null
-  // }
-  // let total = (lastData.distance / (1 * 1)) + lastData.tolls + lastData.foodBudget + lastData.wearAndTear + lastData.misc
-  // // This is the formula for the total cost
-  // console.log(total);
-
-  // console.log(startingPoint);
-  // console.log(endingPoint);
 
   /* ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ============ ============*/
 
@@ -303,9 +263,11 @@ const Create = () => {
             <div className="VinOutputItem">
               MPG:{' '}
               <p className="vinDataOutputPTag">
-                {vinData ? parseFloat(
-                vinData.specification.highway_mileage.split(' ')[0]
-                ) : 'Not Found'}
+                {vinData
+                  ? parseFloat(
+                      vinData.specification.highway_mileage.split(' ')[0]
+                    )
+                  : 'Not Found'}
               </p>
             </div>
           </div>
@@ -416,43 +378,13 @@ const Create = () => {
             />
           </div>
 
-          {/* --410 MAKE thIS ONE BUTTON */}
-
-          {/* <button onClick={(e) => {
-            e.preventDefault()
-            fetch(`https://api.collectapi.com/gasPrice/stateUsaPrice?state=${startingPoint}`, {
-      headers: {
-        "Content-Type": "application/json",
-        "authorization": "apikey 6zYi7g4jsP9iKrZLMKmtTx:1DmTAygjJ0gZgHZ7ArTSbX",
-      },
-    })
-      .then((r) => r.json())
-      .then((resp) => {
-      setGasPriceStart(resp.result.state.gasoline);
-      });
-          }}>Get Gas Prices Start</button> */}
-
-          {/* <button onClick={(e) => {
-            e.preventDefault()
-            fetch(`https://api.collectapi.com/gasPrice/stateUsaPrice?state=${endingPoint}`, {
-      headers: {
-        "Content-Type": "application/json",
-        "authorization": "apikey 3EBIl9TDIFTrlEbpwf1UaT:6KVB1rY4cbTb6o65wO2Nzy",
-      },
-    })
-      .then((r) => r.json())
-      .then((resp) => {
-      setGasPriceEnd(resp.result.state.gasoline);
-      });
-          }}>Get Gas Prices End</button> */}
-          {/* 
-const [gasPrice, setGasPrice] = useState(''); */}
-
           <button
             type="submit"
             value="Submit For Calculations"
             id="submitButton"
-          >Submit For Calculations</button>
+          >
+            Submit For Calculations
+          </button>
         </form>
       </div>
 
@@ -462,15 +394,9 @@ const [gasPrice, setGasPrice] = useState(''); */}
         Miscellaneous
       </p>
 
-      <h2>{data.cost}</h2>
+      <h2>${data?.cost?.toFixed(2)}</h2>
+      <h2>{error?.message}</h2>
 
-      {/* <p>
-        
-        ({lastData.distance} / (MPG * Gas Price)) +
-        {lastData.tolls} + {lastData.foodBudget} +
-        {lastData.wearAndTear} + {lastData.misc}
-      </p> 
-      <h1>TOTAL: ${total}</h1> */}
     </div>
   );
 };
