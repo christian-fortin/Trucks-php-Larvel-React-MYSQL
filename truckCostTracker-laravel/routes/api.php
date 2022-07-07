@@ -21,6 +21,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 // THIS IS WHERE I DEFINED THE ROUTES
-Route::get('getTrips', [TripController::class, 'getTrips']);
 Route::post('postTrips', [TripController::class, 'postTrips']);
+Route::get('getTrips', [TripController::class, 'getTrips']);
+Route::get('getATrip/{id}', [TripController::class, 'getATrip']);
 
+
+// WHY DID THE POST ROUTE HAVE TO GO ON TOP? --410

@@ -28,4 +28,10 @@ class TripController extends Controller
         $trips->save();
         return $trips;
     }
+    function getATrip($id) 
+    {
+        return Trip::find($id);
+    }
+
+    
 }

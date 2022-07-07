@@ -1,46 +1,49 @@
 import React, { useEffect } from 'react';
-import { Route, Routes, Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useState } from 'react';
 import axios from 'axios';
 
-
 const Show = () => {
+  const [data, setData] = useState(null);
 
-    // const [name, setName] = useState('');
-    // const [vin, setVin] = useState('');
-    // const [distance, setDistance] = useState('');
-    // const [tolls, setTolls] = useState('');
-    // const [foodBudget, setFoodBudget] = useState('');
-    // const [wearAndTear, setWearAndTear] = useState('');
-    // const [misc, setMisc] = useState('');
-    // const [startingPoint, setStartingPoint] = useState('');
-    // const [endingPoint, setEndingPoint] = useState('');
+  let { id } = useParams();
+  // THIS IS JUST GRABBING FROM THE URL (THE NUMBER ID)
+  let getData = async (id) => {
+    let trips = await fetch('http://127.0.0.1:8000/api/getATrip/' + id);
+    let json = await trips.json();
+    if (json) {
+      setData(json);
+    }
+  };
+  useEffect(() => {
+    getData(id);
+  }, [id]);
 
+  console.log('THIS IS THE DATA', data);
 
-    const [data, setData] = useState([]);
-    let getData = async (id) => {
-        let trips = await fetch('http://127.0.0.1:8000/api/getTrips/' + id);
-        let json = await trips.json();
-        if (json) {
-          setData(json);
-        }
-      };
-  return (
-    <div id='showCardDiv'>
-        <h1 id='showPageH1' className='spaceAboveAndBelowShow'>Trip: XXX</h1>
-        <h4 className='spaceAboveAndBelowShow'>Starting Point: </h4>
-        <h4 className='spaceAboveAndBelowShow'>Ending Point: </h4>
-        <h4 className='spaceAboveAndBelowShow'>Distance: </h4>
-        <h4 className='spaceAboveAndBelowShow'>Gas Price in {}: </h4>
-        <h4 className='spaceAboveAndBelowShow'>MPG: </h4>
-        <h4 className='spaceAboveAndBelowShow'>Tolls: </h4>
-        <h4 className='spaceAboveAndBelowShow'>Food Budget: </h4>
-        <h4 className='spaceAboveAndBelowShow'>Wear and Tear: </h4>
-        <h4 className='spaceAboveAndBelowShow'>Miscellaneous: </h4>
-        <h2 id='showCardSubDiv'>Total Cost: </h2>
-      
-    </div>
-  )
+if (!data) {
+  return <div className='LoadingDataPlaceHolder'>LOADING</div>
 }
 
-export default Show
+
+
+  return (
+    <div id="showCardDiv">
+      <h1 id="showPageH1" className="spaceAboveAndBelowShow">
+        Trip: {data.trip_name}
+      </h1>
+      <h4 className="spaceAboveAndBelowShow">Starting Point: {data.startingPoint}</h4>
+      <h4 className="spaceAboveAndBelowShow">Ending Point: {data.endingPoint}</h4>
+      <h4 className="spaceAboveAndBelowShow">Distance: {data.distance}(mi)</h4>
+      <h4 className="spaceAboveAndBelowShow">Gas Price in: {data.startingPoint} </h4>
+      {/* <h4 className="spaceAboveAndBelowShow">MPG: {data.trip_name}</h4> */}
+      <h4 className="spaceAboveAndBelowShow">Tolls: ${data.tolls}</h4>
+      <h4 className="spaceAboveAndBelowShow">Food Budget: ${data.foodBudget}</h4>
+      <h4 className="spaceAboveAndBelowShow">Wear and Tear: ${data.wearAndTear}</h4>
+      <h4 className="spaceAboveAndBelowShow">Miscellaneous: ${data.misc}</h4>
+      <h2 id="showCardSubDiv">Total Cost: ${data.cost}</h2>
+    </div>
+  );
+};
+
+export default Show;

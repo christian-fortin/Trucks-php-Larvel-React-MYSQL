@@ -76,7 +76,7 @@ const Create = () => {
 
     setData(null)
     setError(null)
-    // Deconstruction -- Variable Deconstruction
+    // Deconstruction -- Assignment Deconstruction
     const [city, state] = startingPoint.split(',').map(x => x.trim())
 
     fetch(
@@ -170,37 +170,69 @@ const Create = () => {
   useEffect(() => {
     // THIS IS HOW WE GET THE VIN INFO
     if (vin.length === 17) {
-      fetch(`https://vindecoder.p.rapidapi.com/decode_vin?vin=${vin}`, {
-        headers: {
-          'X-RapidAPI-Key':
-            '50617aeee6msh8e0927e93cd95ddp11993ajsn99bf1768dc7f',
-          'X-RapidAPI-Host': 'vindecoder.p.rapidapi.com',
-        },
-      })
-        .then((r) => r.json())
-        .then((json) => {
-          setVinData(json);
-          console.log(json);
-        })
-        .catch((err) => console.log(err));
+
+      const vin = {
+  success: true,
+  specification: {
+    vin: "4F2YU09161KM33122",
+    year: "2001",
+    make: "MAZDA",
+    model: "TRIBUTE",
+    trim_level: "LX",
+    engine: "3.0L V6 DOHC 24V",
+    style: "SPORT UTILITY 4-DR",
+    made_in: "UNITED STATES",
+    steering_type: "R&P",
+    anti_brake_system: "Non-ABS | 4-Wheel ABS",
+    tank_size: "16.40 gallon",
+    overall_height: "69.90 in.",
+    overall_length: "173.00 in.",
+    overall_width: "71.90 in.",
+    standard_seating: "5",
+    optional_seating: null,
+    highway_mileage: "24 miles/gallon",
+    city_mileage: "18 miles/gallon",
+  },
+  vin: "4F2YU09161KM33122",
+
+};
+
+setVinData(vin) 
+
+
+
+
+      // fetch(`https://vindecoder.p.rapidapi.com/decode_vin?vin=${vin}`, {
+      //   headers: {
+      //     'X-RapidAPI-Key':
+      //       'c2e50e0d31mshf5ce1f0e764f358p128225jsna6c091d42f20',
+      //     'X-RapidAPI-Host': 'vindecoder.p.rapidapi.com',
+      //   },
+      // })
+      //   .then((r) => r.json())
+      //   .then((json) => {
+      //     setVinData(json);
+      //     console.log(json);
+      //   })
+      //   .catch((err) => console.log(err));
     }
   }, [vin]);
 
-  console.log('THIS IS THE VIN DATA', vinData);
-  if (vinData) {
-    // of the array is 0, then set it to null so there is no error
-    console.log('THIS IS THE VIN MAKE', vinData.specification.make);
-    console.log('THIS IS THE VIN MODEL', vinData.specification.model);
-    console.log('THIS IS THE VIN TANK SIZE', vinData.specification.tank_size);
-    if (vinData.specification.highway_mileage) {
-      console.log(
-        'THIS IS THE VIN MPG',
-        parseFloat(vinData.specification.highway_mileage.split(' ')[0])
-      );
-    } else {
-      console.log('Unavailable');
-    }
-  }
+  // console.log('THIS IS THE VIN DATA', vinData);
+  // if (vinData) {
+  //   // of the array is 0, then set it to null so there is no error
+  //   console.log('THIS IS THE VIN MAKE', vinData.specification.make);
+  //   console.log('THIS IS THE VIN MODEL', vinData.specification.model);
+  //   console.log('THIS IS THE VIN TANK SIZE', vinData.specification.tank_size);
+  //   if (vinData.specification.highway_mileage) {
+  //     console.log(
+  //       'THIS IS THE VIN MPG',
+  //       parseFloat(vinData.specification.highway_mileage.split(' ')[0])
+  //     );
+  //   } else {
+  //     console.log('Unavailable');
+  //   }
+  // }
 
   /* ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ============ ============*/
 
@@ -397,9 +429,8 @@ const Create = () => {
         (Distance / (MPG * Gas Price)) + Tolls + Food + Wear and Tear +
         Miscellaneous
       </p>
-
-      <h2>${data?.cost?.toFixed(2)}</h2>
-      <h2>{error?.message}</h2>
+      {data?.cost && <h2>${data?.cost?.toFixed(2)}</h2> }
+      <h2>{error?.message?.match("Error: Duplicate entry 'Fluff'")}</h2>
 
     </div>
   );

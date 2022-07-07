@@ -31,6 +31,7 @@ const Home = () => {
         <table>
           <thead>
             <tr>
+              
               <th>ID</th>
               <th>Trip Name</th>
               <th>Cost</th>
@@ -55,7 +56,10 @@ const Home = () => {
 
               return (
                 <tr key={datum.id}>
-                  <td className='datumSquare_table'>{datum.id}</td>
+                  
+                  <td className='datumSquare_table'> <Link className='datumSquare_table' to={"show/"+datum.id}>{datum.id}  </Link></td>
+
+                
                   <td className='datumSquare_table'>{datum.trip_name}</td>
                   <td className='datumSquare_table'>${datum.cost}</td>
                   <td className='datumSquare_table'>{dateString}</td>
