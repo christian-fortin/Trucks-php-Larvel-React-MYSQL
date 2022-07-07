@@ -76,9 +76,11 @@ const Create = () => {
 
     setData(null)
     setError(null)
+    // Deconstruction -- Variable Deconstruction
+    const [city, state] = startingPoint.split(',').map(x => x.trim())
 
     fetch(
-      `https://api.collectapi.com/gasPrice/stateUsaPrice?state=${startingPoint}`,
+      `https://api.collectapi.com/gasPrice/stateUsaPrice?state=${state}`,
       {
         headers: {
           'Content-Type': 'application/json',
@@ -88,7 +90,9 @@ const Create = () => {
     )
       .then((r) => r.json())
       .then((resp) => {
-        return resp.result.state.gasoline;
+        const cityData = resp.result.cities.find(c => c.lowerName === city.toLowerCase())
+        console.log('THIS IS THE CITY DATA', cityData);
+        return cityData ? cityData.gasoline : resp.result.state.gasoline;
         // setGasPriceStart(resp.result.state.gasoline);
       })
       .then((gasolinePrice) => {
@@ -352,7 +356,7 @@ const Create = () => {
 
           <div className="spaceAboveAndBelow">
             <label className="labelText" htmlFor="startingPoint">
-              Starting Point:
+              Starting Point: (Format: City Name, State Code)
             </label>
             <input
               className="createPageInput startEndPointInputs"
@@ -366,7 +370,7 @@ const Create = () => {
 
           <div className="spaceAboveAndBelow">
             <label className="labelText" htmlFor="endingPoint">
-              End Point:
+              End Point: (Format: City Name, State Code)
             </label>
             <input
               className="createPageInput startEndPointInputs"
