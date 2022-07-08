@@ -7,6 +7,8 @@ use App\Models\Trip;
 // This is basically where I send all the data from the model to the front end. 
 class TripController extends Controller
 {
+
+
     // This function is how I can access all of the trips.
     function getTrips() 
     {
@@ -14,6 +16,21 @@ class TripController extends Controller
     }
     function postTrips(Request $req) 
     {
+
+        $validated = $req->validate([
+            'trip_name' => 'required|unique:trips|max:255',
+            'vin_number' => 'required|size:17',
+            'distance' => 'required|numeric',
+            'tolls' => 'required|numeric',
+            'foodBudget' => 'required|numeric',
+            'wearAndTear' => 'required|numeric',
+            'misc' => 'required|numeric',
+            'startingPoint' => 'required',
+            'endingPoint' => 'required',
+
+        ]);
+
+
         $trips = new Trip;
         $trips->trip_name=$req->input('trip_name');
         $trips->vin_number=$req->input('vin_number');

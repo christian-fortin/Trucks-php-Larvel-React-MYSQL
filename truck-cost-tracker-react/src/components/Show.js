@@ -29,19 +29,19 @@ if (!data) {
 
   return (
     <div id="showCardDiv">
-      <h1 id="showPageH1" className="spaceAboveAndBelowShow">
-        Trip: {data.trip_name}
+      <h1 id="showPageH1" className="spaceAboveAndBelowShow"> Trip:
+      <span className='showPageDatumSpan'>{data.trip_name}</span>
       </h1>
-      <h4 className="spaceAboveAndBelowShow">Starting Point: {data.startingPoint}</h4>
-      <h4 className="spaceAboveAndBelowShow">Ending Point: {data.endingPoint}</h4>
-      <h4 className="spaceAboveAndBelowShow">Distance: {data.distance}(mi)</h4>
-      <h4 className="spaceAboveAndBelowShow">Gas Price in: {data.startingPoint} </h4>
+      <h4 className="spaceAboveAndBelowShow">Starting Point: <span className='showPageDatumSpan'>{data.startingPoint}</span></h4>
+      <h4 className="spaceAboveAndBelowShow">Ending Point: <span className='showPageDatumSpan'>{data.endingPoint}</span></h4>
+      <h4 className="spaceAboveAndBelowShow">Distance: <span className='showPageDatumSpan'>{data.distance}(mi)</span></h4>
+      <h4 className="spaceAboveAndBelowShow">Gas Price in: <span className='showPageDatumSpan'>{data.startingPoint}</span></h4>
       {/* <h4 className="spaceAboveAndBelowShow">MPG: {data.trip_name}</h4> */}
-      <h4 className="spaceAboveAndBelowShow">Tolls: ${data.tolls}</h4>
-      <h4 className="spaceAboveAndBelowShow">Food Budget: ${data.foodBudget}</h4>
-      <h4 className="spaceAboveAndBelowShow">Wear and Tear: ${data.wearAndTear}</h4>
-      <h4 className="spaceAboveAndBelowShow">Miscellaneous: ${data.misc}</h4>
-      <h2 id="showCardSubDiv">Total Cost: ${data.cost}</h2>
+      <h4 className="spaceAboveAndBelowShow">Tolls: <span className='showPageDatumSpan'>${data.tolls}</span></h4>
+      <h4 className="spaceAboveAndBelowShow">Food Budget: <span className='showPageDatumSpan'>${data.foodBudget}</span></h4>
+      <h4 className="spaceAboveAndBelowShow">Wear and Tear: <span className='showPageDatumSpan'>${data.wearAndTear}</span></h4>
+      <h4 className="spaceAboveAndBelowShow">Miscellaneous: <span className='showPageDatumSpan'>${data.misc}</span></h4>
+      <h2 id="showCardSubDiv">Total Cost: <span className='showPageDatumSpan'>${data.cost}</span></h2>
     </div>
   );
 };

@@ -46,7 +46,7 @@ th{
 
 td, th {
   border: 5px solid maroon;
-  text-align: left;
+  text-align: center;
   padding: 8px;
 
 }
@@ -142,7 +142,7 @@ text-decoration: underline solid black 5px;
 
 .spaceAboveAndBelowShow{
   margin: 2rem 0 2rem 0rem;
-  text-decoration: underline solid .2rem black;
+
 }
 
 #showCardSubDiv{  
@@ -190,8 +190,21 @@ text-decoration: underline solid black 5px;
 
 }
 
+.createPageErrorSpan{
+color: red;
+font-weight: bolder;
+font-size: larger;
+}
+
 /* HOME PAGE: ======================================================================================================================== ============================================================ ============================================================*/
 
 #homeTitleH1{
   color: black;
+}
+
+
+/* Show PAGE: ======================================================================================================================== ============================================================ ============================================================*/
+
+.showPageDatumSpan{
+  color: white;
 }

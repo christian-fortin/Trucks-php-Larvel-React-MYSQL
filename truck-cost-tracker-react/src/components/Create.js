@@ -16,9 +16,10 @@ const Create = () => {
   const [foodBudget, setFoodBudget] = useState('');
   const [wearAndTear, setWearAndTear] = useState('');
   const [misc, setMisc] = useState('');
-  const [startingPoint, setStartingPoint] = useState('');
-  const [endingPoint, setEndingPoint] = useState('');
+  const [startingPoint, setStartingPoint] = useState('Bellingham, WA');
+  const [endingPoint, setEndingPoint] = useState('New York City, New York');
   const [error, setError] = useState('');
+  const [processing, setProcessing] = useState(false);
   // const [gasPriceStart, setGasPriceStart] = useState('');
   // const [gasPriceEnd, setGasPriceEnd] = useState('');
   // const [timeStamp, setTimeStamp] = useState('');
@@ -32,46 +33,48 @@ const Create = () => {
   const handleSubmit = (evt) => {
     // HandleSubmit is to get the current value in an input and compares it to the schema and then hooks it back in.
     evt.preventDefault();
+    setProcessing(true);
     // Stops the form from automatically submitting
 
-    // CHECKS FOR INPUTS
-    if (!name) {
-      alert('Please Enter The Trip Name');
-      return;
-    }
+    // // CHECKS FOR INPUTS
+    // if (!name) {
+    //   alert('Please Enter The Trip Name');
+    //   return;
+    // }
     //FUNKY STATEMENT - DE MORGANS LAW
     if (!(vin?.length === 17)) {
       alert('Please Enter The VIN Number, Check that it is 17 Characters Long');
+      setProcessing(false);
       return;
     }
-    if (!distance) {
-      alert('Please Enter The Trip Distance');
-      return;
-    }
-    if (!tolls) {
-      alert('Please Enter Cost of Tolls');
-      return;
-    }
-    if (!foodBudget) {
-      alert('Please Enter Cost of the Food Budget');
-      return;
-    }
+    // if (!distance) {
+    //   alert('Please Enter The Trip Distance');
+    //   return;
+    // }
+    // if (!tolls) {
+    //   alert('Please Enter Cost of Tolls');
+    //   return;
+    // }
+    // if (!foodBudget) {
+    //   alert('Please Enter Cost of the Food Budget');
+    //   return;
+    // }
 
-    if (!misc) {
-      alert(
-        'Please Enter the Cost of other Miscellaneous Expenses, if None, Enter 0'
-      );
-      return;
-    }
-    if (!startingPoint) {
-      alert('Please Enter the Starting Point');
-      return;
-    }
+    // if (!misc) {
+    //   alert(
+    //     'Please Enter the Cost of other Miscellaneous Expenses, if None, Enter 0'
+    //   );
+    //   return;
+    // }
+    // if (!startingPoint) {
+    //   alert('Please Enter the Starting Point');
+    //   return;
+    // }
 
-    if (!endingPoint) {
-      alert('Please Enter the Ending Point');
-      return;
-    }
+    // if (!endingPoint) {
+    //   alert('Please Enter the Ending Point');
+    //   return;
+    // }
 
 
     setData(null)
@@ -136,33 +139,12 @@ const Create = () => {
           setError(r) 
         }
       })
-      .catch((err) => console.log('THIS IS THE DATA ERROR', err));
+      .catch((err) => console.log('THIS IS THE DATA ERROR', err))
+      .finally(() => setProcessing(false))
     // Catches an error
 
-    // if (!cost) {
-    //   alert('Please Enter The Missing Information');
-    //   return;
-    // }
   };
   /* ============ ============ ============ ============ ============ ============ ============ ============ ============ ============ ============ =========== =========== =============*/
-
-  /* THIS IS TO GET ALL THE DATA FOR THE TRIPS -- USED FOR THE CALCULATIONS AT THE BOTTOM
-================= ================ ================ ================ ================ ================ ================ ================ ================ ================ =======*/
-
-  // let getData = async () => {
-  //   let trips = await fetch('http://127.0.0.1:8000/api/getTrips');
-  //   let json = await trips.json();
-  //   if (json) {
-  //     setData(json);
-  //     // Sets the data
-  //   }
-  // };
-  // console.log('DATA:', data);
-  // useEffect(() => {
-  //   getData();
-  // }, []);
-  // Use effect basically makes it so an event only happens at a certain point, adding the empty array means it only happens once.
-  /* ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ============ ============*/
 
   /*THIS IS HOW WE GET THE VIN INFO
   ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ========= ============ ============*/
@@ -197,10 +179,7 @@ const Create = () => {
 
 };
 
-setVinData(vin) 
-
-
-
+setVinData(vin)
 
       // fetch(`https://vindecoder.p.rapidapi.com/decode_vin?vin=${vin}`, {
       //   headers: {
@@ -309,9 +288,7 @@ setVinData(vin)
           </div>
           {/* LOOK INTO CONDITIONAL RENDERING -- the && to check if I have the vin data */}
 
-          <div id="createSubTitleDiv">
-            <h2 id="createSubTitleH2">Cost Calculator:</h2>
-          </div>
+      
 
           {/* COST CALCULATOR SECTION OF FORM */}
 
@@ -418,6 +395,8 @@ setVinData(vin)
             type="submit"
             value="Submit For Calculations"
             id="submitButton"
+
+            disabled={processing}
           >
             Submit For Calculations
           </button>
@@ -430,7 +409,8 @@ setVinData(vin)
         Miscellaneous
       </p>
       {data?.cost && <h2>${data?.cost?.toFixed(2)}</h2> }
-      <h2>{error?.message?.match("Error: Duplicate entry 'Fluff'")}</h2>
+      {/* <h2>{error?.message?.match("Error: Duplicate entry 'Fluff'")}</h2> */}
+      <h2>{error?.message && <h2> <span className='createPageErrorSpan'>Error:</span> {error?.message}</h2>}</h2>
 
     </div>
   );
